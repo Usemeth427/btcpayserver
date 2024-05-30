@@ -17,7 +17,7 @@ namespace BTCPayServer.Client
         private readonly Uri _btcpayHost;
         private readonly string _username;
         private readonly string _password;
-        private readonly HttpClient _httpClient;
+        protected readonly HttpClient _httpClient;
         public Uri Host => _btcpayHost;
 
         public string APIKey => _apiKey;
@@ -77,14 +77,15 @@ namespace BTCPayServer.Client
             return JsonConvert.DeserializeObject<T>(str);
         }
 
-        public async Task<T> SendHttpRequest<T>(string path,
+        protected virtual async Task<T> SendHttpRequest<T>(string path,
             Dictionary<string, object> queryPayload = null,
             HttpMethod method = null, CancellationToken cancellationToken = default)
         {
             using var resp = await _httpClient.SendAsync(CreateHttpRequest(path, queryPayload, method), cancellationToken);
             return await HandleResponse<T>(resp);
         }
-        public async Task<T> SendHttpRequest<T>(string path,
+
+        protected virtual async Task<T> SendHttpRequest<T>(string path,
         object bodyPayload = null,
         HttpMethod method = null, CancellationToken cancellationToken = default)
         {
