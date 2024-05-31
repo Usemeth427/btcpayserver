@@ -70,7 +70,7 @@ namespace BTCPayServer.Client
             message.EnsureSuccessStatusCode();
         }
 
-        protected async Task<T> HandleResponse<T>(HttpResponseMessage message)
+        protected virtual async Task<T> HandleResponse<T>(HttpResponseMessage message)
         {
             await HandleResponse(message);
             var str = await message.Content.ReadAsStringAsync();
@@ -86,8 +86,8 @@ namespace BTCPayServer.Client
         }
 
         protected virtual async Task<T> SendHttpRequest<T>(string path,
-        object bodyPayload = null,
-        HttpMethod method = null, CancellationToken cancellationToken = default)
+            object bodyPayload = null,
+            HttpMethod method = null, CancellationToken cancellationToken = default)
         {
             using var resp = await _httpClient.SendAsync(CreateHttpRequest(path: path, bodyPayload: bodyPayload, method: method), cancellationToken);
             return await HandleResponse<T>(resp);
@@ -107,7 +107,7 @@ namespace BTCPayServer.Client
                 httpRequest.Headers.Authorization = new AuthenticationHeaderValue("token", _apiKey);
             else if (!string.IsNullOrEmpty(_username))
             {
-                httpRequest.Headers.Authorization = new AuthenticationHeaderValue("Basic", System.Convert.ToBase64String(Encoding.ASCII.GetBytes(_username + ":" + _password)));
+                httpRequest.Headers.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(Encoding.ASCII.GetBytes(_username + ":" + _password)));
             }
 
 
